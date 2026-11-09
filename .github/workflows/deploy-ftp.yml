@@ -39,6 +39,7 @@ jobs:
           cp dist/variant-2.html _site/index.html
           cp dist/privacy.html _site/privacy.html
           cp dist/personal-data.html _site/personal-data.html
+          cp dist/consent.html _site/consent.html
           cp -R dist/assets _site/assets
 
       - name: Upload to REG.RU
