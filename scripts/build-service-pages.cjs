@@ -103,7 +103,7 @@ ${shared.html}
 <section class="section surface"><div class="wrap faq"><h2>${design.data[p.slug].faqTitle}</h2>${p.faq.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></section>
 <section class="section" id="request"><div class="wrap request" id="contacts"><div><h2>${p.prompt}</h2><p>Оставьте номер телефона — свяжемся с вами и обсудим задачу.</p><p class="small">Предпочитаете связаться напрямую?<br><a href="tel:+79261762490">+7 (926) 176-24-90</a><br><a href="mailto:info@bit-finans.pro">info@bit-finans.pro</a></p></div><form><label>Телефон<input name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[+0-9\\(\\) .\\-]{7,}"></label><label class="consent"><input type="checkbox" name="consent" required><span>Даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a>. <a href="personal-data.html" target="_blank" rel="noopener">Политика обработки данных</a>.</span></label><button class="btn" type="submit">${p.cta}</button><p class="small" style="margin-top:12px">Заявка отправляется через вашу почтовую программу.</p><p class="status" aria-live="polite"></p></form></div></section>
 </main>
-<footer><div class="wrap"><a class="brand" href="/">БИТ<span>.</span>ФИНАНС</a><p>Внедрение финансово-экономического контура на базе 1С.</p><div class="legal"><span>© 2026 БИТ.ФИНАНС</span><a href="user-agreement.html">Пользовательское соглашение</a><a href="personal-data.html">Политика обработки персональных данных</a></div></div></footer><script>${design.navJS}${client}${shared.js}</script></body></html>`;
+<footer><div class="wrap"><a class="brand" href="#main">БИТ<span>.</span>ФИНАНС</a><p>Внедрение финансово-экономического контура на базе 1С.</p><div class="legal"><span>© 2026 БИТ.ФИНАНС</span><a href="user-agreement.html">Пользовательское соглашение</a><a href="personal-data.html">Политика обработки персональных данных</a></div></div></footer><script>${design.navJS}${client}${shared.js}</script></body></html>`;
  fs.writeFileSync(path.join(root,'dist',p.slug+'.html'),html);
 }
 const urls=['',...pages.map(p=>p.slug+'.html'),'about.html','reviews.html','contacts.html'];
@@ -125,6 +125,11 @@ const descriptions=['Архитектура, настройка и запуск 
 const cards=pages.map((p,i)=>`<article class="hero-panel direction-card"><div class="direction-media"><img src="https://www.bit-finans.pro/wp-content/themes/bitfinance/static/local-media/${images[i]}" alt="${p.short} БИТ.ФИНАНС" loading="lazy"></div><div class="direction-body"><h3><a href="${p.slug}.html">${p.short}</a></h3><p>${descriptions[i]}</p><span class="direction-more" aria-hidden="true">Подробнее об услуге ↗</span></div></article>`).join('\n');
 home=home.replace(/(<div class="hero-panels" id="hero-carousel-track">)[\s\S]*?(?=<div class="carousel-dots")/,`$1\n${cards}\n</div>\n`);
 home=home.replace('>Обучение и сопровождение</a>','>Обучение</a>').replace('<a href="#cases">Кейсы</a>','<a href="reviews.html">Отзывы</a><a href="about.html">Об Андрее</a>').replace('<h3>Контакты</h3>','<h3><a href="contacts.html">Контакты</a></h3>');
+// Footer navigation, like the header, points to sections of this document.
+home=home.replace(/<footer[\s\S]*?<\/footer>/,footer=>footer
+ .replace(/<nav aria-label="Услуги">[\s\S]*?<\/nav>/,'<nav aria-label="Быстрые ссылки"><h3>Быстрые ссылки</h3><a href="#solutions">Услуги</a><a href="#expert">Об Андрее</a><a href="#cases">Отзывы</a></nav>')
+ .replace(/<nav aria-label="Материалы">[\s\S]*?<\/nav>/,'<nav aria-label="Материалы"><h3>Материалы</h3><a href="#process">Этапы работы</a><a href="#certificates">Сертификаты</a><a href="#materials">Подготовка к внедрению</a></nav>')
+ .replace('href="contacts.html"','href="#contacts"'));
 fs.writeFileSync(homePath,home);
 require('./build-info-pages.cjs')(home,pages,root);
 console.log('Built about, reviews and contacts pages.');
