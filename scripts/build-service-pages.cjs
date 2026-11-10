@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const design = require('./service-design.cjs');
+const serviceHero = require('./service-hero.cjs');
 const shared = require('./shared-home-blocks.cjs')(fs.readFileSync(path.join(root,'dist','variant-2.html'),'utf8'));
 const pages = [
   {
@@ -94,9 +95,9 @@ const client = `const form=document.querySelector('form');form.addEventListener(
 for(const p of pages){
  const schema={'@context':'https://schema.org','@type':'WebPage',name:p.title,url:`${origin}/${p.slug}.html`,description:p.description,breadcrumb:{'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Главная',item:origin+'/'},{'@type':'ListItem',position:2,name:p.short,item:`${origin}/${p.slug}.html`}]}};
  const html=`<!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title)}</title><meta name="description" content="${esc(p.description)}"><link rel="canonical" href="${origin}/${p.slug}.html"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.description)}"><meta property="og:type" content="website"><meta property="og:url" content="${origin}/${p.slug}.html"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>${css}${design.css}${shared.css}</style><script type="application/ld+json">${JSON.stringify(schema)}</script></head>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title)}</title><meta name="description" content="${esc(p.description)}"><link rel="canonical" href="${origin}/${p.slug}.html"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.description)}"><meta property="og:type" content="website"><meta property="og:url" content="${origin}/${p.slug}.html"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>${css}${design.css}${shared.css}${serviceHero.css}</style><script type="application/ld+json">${JSON.stringify(schema)}</script></head>
 <body class="service-page"><a class="skip" href="#main">К содержанию</a>${design.header(pages,p.slug)}
-<main id="main"><div class="wrap"><nav class="crumb" aria-label="Хлебные крошки"><a href="/">Главная</a><span aria-hidden="true">/</span><span aria-current="page">${p.short}</span></nav><section class="hero"><div><h1>${p.h1}</h1><p class="lead">${p.lead}</p><a class="btn" href="#request">${p.cta}</a><p class="small">Первый шаг — обсуждение задачи с Андреем Чуйкиным.</p></div><div class="service-visual">${design.visual(p)}</div></section></div>
+<main id="main"><div class="wrap"><nav class="crumb" aria-label="Хлебные крошки"><a href="/">Главная</a><span aria-hidden="true">/</span><span aria-current="page">${p.short}</span></nav><section class="hero service-hero">${serviceHero.render(p)}<div class="service-visual">${design.visual(p)}</div></section></div>
 ${design.data[p.slug].body()}
 ${shared.html}
 <section class="section surface"><div class="wrap faq"><h2>${design.data[p.slug].faqTitle}</h2>${p.faq.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></section>
