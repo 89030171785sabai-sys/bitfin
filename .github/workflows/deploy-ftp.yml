@@ -42,6 +42,7 @@ jobs:
           cp dist/consent.html _site/consent.html
           cp dist/user-agreement.html _site/user-agreement.html
           cp dist/*-bit-finans.html _site/
+          cp dist/about.html dist/reviews.html dist/contacts.html _site/
           cp dist/sitemap.xml dist/robots.txt _site/
           cp -R dist/assets _site/assets
 
