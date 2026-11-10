@@ -41,6 +41,8 @@ jobs:
           cp dist/personal-data.html _site/personal-data.html
           cp dist/consent.html _site/consent.html
           cp dist/user-agreement.html _site/user-agreement.html
+          cp dist/*-bit-finans.html _site/
+          cp dist/sitemap.xml dist/robots.txt _site/
           cp -R dist/assets _site/assets
 
       - name: Upload to REG.RU
