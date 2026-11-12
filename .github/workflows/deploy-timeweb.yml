@@ -9,8 +9,8 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: timeweb-ftp
-  cancel-in-progress: true
+  group: timeweb-sftp
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -20,27 +20,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Check FTP configuration
-        id: ftp-config
-        env:
-          FTP_SERVER: ${{ secrets.TIMEWEB_FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.TIMEWEB_FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.TIMEWEB_FTP_PASSWORD }}
-          FTP_SERVER_DIR: ${{ secrets.TIMEWEB_FTP_SERVER_DIR }}
-        run: |
-          if [ -n "$FTP_SERVER" ] && [ -n "$FTP_USERNAME" ] && [ -n "$FTP_PASSWORD" ] && [ -n "$FTP_SERVER_DIR" ]; then
-            echo "ready=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-            if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
-              echo "::error::Set the four TIMEWEB_FTP repository secrets before running this workflow"
-              exit 1
-            fi
-            echo "::notice::Timeweb deployment requires the four TIMEWEB_FTP repository secrets"
-          fi
-
       - name: Prepare production files
-        if: steps.ftp-config.outputs.ready == 'true'
         run: |
           mkdir -p _site
           cp dist/variant-2.html _site/index.html
@@ -54,14 +34,23 @@ jobs:
           cp -R dist/assets _site/assets
 
       - name: Upload to Timeweb
-        if: steps.ftp-config.outputs.ready == 'true'
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.TIMEWEB_FTP_SERVER }}
-          username: ${{ secrets.TIMEWEB_FTP_USERNAME }}
-          password: ${{ secrets.TIMEWEB_FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          security: strict
-          local-dir: ./_site/
-          server-dir: ${{ secrets.TIMEWEB_FTP_SERVER_DIR }}
+        env:
+          TIMEWEB_SSH_KEY: ${{ secrets.TIMEWEB_SSH_KEY }}
+        run: |
+          test -n "$TIMEWEB_SSH_KEY" || { echo "::error::Set TIMEWEB_SSH_KEY"; exit 1; }
+          umask 077
+          key_file="$(mktemp)"
+          hosts_file="$(mktemp)"
+          trap 'rm -f "$key_file" "$hosts_file"' EXIT
+          printf '%s\n' "$TIMEWEB_SSH_KEY" > "$key_file"
+          printf '%s\n' 'vh464.timeweb.ru ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILh9lbCer2VtJU+gZQHlgaCy7ELu11tNsHIymnVWwDfw' > "$hosts_file"
+          sftp -i "$key_file" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$hosts_file" -o ConnectTimeout=15 -b - \
+            ci100657@vh464.timeweb.ru <<'SFTP'
+          cd bitfin-new/public_html
+          put -R _site/assets
+          put _site/*.html
+          put _site/robots.txt
+          put _site/sitemap.xml
+          ls -l index.html
+          SFTP
