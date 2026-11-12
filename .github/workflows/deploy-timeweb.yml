@@ -1,0 +1,59 @@
+name: Deploy website to Timeweb
+
+on:
+  push:
+    branches: [main]\n    paths:\n      - dist/**\n      - .github/workflows/deploy-timeweb.yml
+  workflow_dispatch:
+
+concurrency:
+  group: timeweb-ftp
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Upload the latest design
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Check FTP configuration
+        id: ftp-config
+        env:
+          FTP_SERVER: ${{ secrets.TIMEWEB_FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.TIMEWEB_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.TIMEWEB_FTP_PASSWORD }}
+          FTP_SERVER_DIR: ${{ secrets.TIMEWEB_FTP_SERVER_DIR }}
+        run: |
+          if [ -n "$FTP_SERVER" ] && [ -n "$FTP_USERNAME" ] && [ -n "$FTP_PASSWORD" ] && [ -n "$FTP_SERVER_DIR" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"\n            if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then\n              echo "::error::Set the four TIMEWEB_FTP repository secrets before running this workflow"\n              exit 1\n            fi
+            echo "::notice::Timeweb deployment requires the four TIMEWEB_FTP repository secrets"
+          fi
+
+      - name: Prepare production files
+        if: steps.ftp-config.outputs.ready == 'true'
+        run: |
+          mkdir -p _site
+          cp dist/variant-2.html _site/index.html
+          cp dist/privacy.html _site/privacy.html
+          cp dist/personal-data.html _site/personal-data.html
+          cp dist/consent.html _site/consent.html
+          cp dist/user-agreement.html _site/user-agreement.html
+          cp dist/*-bit-finans.html _site/
+          cp dist/about.html dist/reviews.html dist/contacts.html _site/
+          cp dist/sitemap.xml dist/robots.txt _site/
+          cp -R dist/assets _site/assets
+
+      - name: Upload to Timeweb
+        if: steps.ftp-config.outputs.ready == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.TIMEWEB_FTP_SERVER }}
+          username: ${{ secrets.TIMEWEB_FTP_USERNAME }}
+          password: ${{ secrets.TIMEWEB_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21\n          security: strict
+          local-dir: ./_site/
+          server-dir: ${{ secrets.TIMEWEB_FTP_SERVER_DIR }}
