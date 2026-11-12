@@ -2,7 +2,10 @@ name: Deploy website to Timeweb
 
 on:
   push:
-    branches: [main]\n    paths:\n      - dist/**\n      - .github/workflows/deploy-timeweb.yml
+    branches: [main]
+    paths:
+      - dist/**
+      - .github/workflows/deploy-timeweb.yml
   workflow_dispatch:
 
 concurrency:
@@ -28,7 +31,11 @@ jobs:
           if [ -n "$FTP_SERVER" ] && [ -n "$FTP_USERNAME" ] && [ -n "$FTP_PASSWORD" ] && [ -n "$FTP_SERVER_DIR" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
-            echo "ready=false" >> "$GITHUB_OUTPUT"\n            if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then\n              echo "::error::Set the four TIMEWEB_FTP repository secrets before running this workflow"\n              exit 1\n            fi
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
+              echo "::error::Set the four TIMEWEB_FTP repository secrets before running this workflow"
+              exit 1
+            fi
             echo "::notice::Timeweb deployment requires the four TIMEWEB_FTP repository secrets"
           fi
 
@@ -54,6 +61,7 @@ jobs:
           username: ${{ secrets.TIMEWEB_FTP_USERNAME }}
           password: ${{ secrets.TIMEWEB_FTP_PASSWORD }}
           protocol: ftps
-          port: 21\n          security: strict
+          port: 21
+          security: strict
           local-dir: ./_site/
           server-dir: ${{ secrets.TIMEWEB_FTP_SERVER_DIR }}
