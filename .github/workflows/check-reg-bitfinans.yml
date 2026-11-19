@@ -1,0 +1,38 @@
+name: Check bitfinans.pro FTP access
+
+on:
+  push:
+    branches: [check-reg-bitfinans]
+    paths:
+      - .github/workflows/check-reg-bitfinans.yml
+
+permissions: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check certificate, login and site directory
+        env:
+          FTP_PASSWORD: ${{ secrets.REG_BITFINANS_FTP_PASSWORD }}
+        shell: bash
+        run: |
+          if [[ -z "$FTP_PASSWORD" ]]; then
+            echo "::error::Add the REG_BITFINANS_FTP_PASSWORD repository secret."
+            exit 1
+          fi
+          if [[ "$FTP_PASSWORD" == *$'\n'* || "$FTP_PASSWORD" == *$'\r'* ]]; then
+            echo "::error::The FTP password must occupy one line."
+            exit 1
+          fi
+          password="${FTP_PASSWORD//\\/\\\\}"
+          password="${password//\"/\\\"}"
+          files=$(printf 'user = "u3734686_bitfinans.pro:%s"\n' "$password" |
+            curl --config - --silent --show-error --ssl-reqd \
+              --connect-timeout 10 --max-time 25 --list-only \
+              ftp://server88.hosting.reg.ru/)
+          if ! printf '%s\n' "$files" | tr -d '\r' | grep -Fxq 'index.html'; then
+            echo "::error::Login succeeded, but index.html was not found in the FTP root."
+            exit 1
+          fi
+          echo "TLS and FTP login verified. The site index.html is present."
