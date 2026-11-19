@@ -6,13 +6,19 @@ on:
     paths:
       - .github/workflows/check-reg-bitfinans.yml
 
-permissions: {}
+permissions:
+  contents: read
+
+concurrency:
+  group: reg-bitfinans-migration
+  cancel-in-progress: false
 
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - name: Check certificate, login and site directory
+      - uses: actions/checkout@v6
+      - name: Check access and upload the migration bundle
         env:
           FTP_PASSWORD: ${{ secrets.REG_BITFINANS_FTP_PASSWORD }}
         shell: bash
@@ -36,3 +42,25 @@ jobs:
             exit 1
           fi
           echo "TLS and FTP login verified. The site index.html is present."
+          php -l dist/request.php
+
+          upload() {
+            local file="$1"
+            local remote="${file#dist/}"
+            printf 'user = "u3734686_bitfinans.pro:%s"\n' "$password" |
+              curl --config - --silent --show-error --ssl-reqd --ftp-create-dirs \
+                --connect-timeout 10 --max-time 120 --upload-file "$file" \
+                "ftp://server88.hosting.reg.ru/$remote"
+          }
+
+          while IFS= read -r -d '' file; do
+            upload "$file"
+          done < <(find dist/assets -type f -print0)
+          for file in dist/*.html dist/robots.txt dist/sitemap.xml dist/request.php; do
+            case "$file" in
+              dist/index.html|dist/variant-2.html) continue ;;
+            esac
+            upload "$file"
+          done
+          upload dist/index.html
+          echo "Migration bundle uploaded."
