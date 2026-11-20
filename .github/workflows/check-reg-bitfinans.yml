@@ -5,6 +5,8 @@ on:
     branches: [check-reg-bitfinans]
     paths:
       - .github/workflows/check-reg-bitfinans.yml
+      - dist/index.html
+      - dist/contacts.html
 
 permissions:
   contents: read
@@ -53,14 +55,6 @@ jobs:
                 "ftp://server88.hosting.reg.ru/$remote"
           }
 
-          while IFS= read -r -d '' file; do
-            upload "$file"
-          done < <(find dist/assets -type f -print0)
-          for file in dist/*.html dist/robots.txt dist/sitemap.xml dist/request.php; do
-            case "$file" in
-              dist/index.html|dist/variant-2.html) continue ;;
-            esac
-            upload "$file"
-          done
+          upload dist/contacts.html
           upload dist/index.html
-          echo "Migration bundle uploaded."
+          echo "Contact links updated."
