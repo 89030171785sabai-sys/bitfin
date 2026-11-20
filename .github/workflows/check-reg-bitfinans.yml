@@ -5,8 +5,8 @@ on:
     branches: [check-reg-bitfinans]
     paths:
       - .github/workflows/check-reg-bitfinans.yml
-      - dist/index.html
-      - dist/contacts.html
+      - dist/*.html
+      - dist/favicon.svg
 
 permissions:
   contents: read
@@ -55,6 +55,12 @@ jobs:
                 "ftp://server88.hosting.reg.ru/$remote"
           }
 
-          upload dist/contacts.html
+          upload dist/favicon.svg
+          for file in dist/*.html; do
+            case "$file" in
+              dist/index.html|dist/variant-2.html) continue ;;
+            esac
+            upload "$file"
+          done
           upload dist/index.html
-          echo "Contact links updated."
+          echo "Pages and tab icon updated."
