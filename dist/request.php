@@ -35,7 +35,7 @@ $phone = field('phone', 40);
 $contact = $type === 'materials' ? field('contact', 80) : $phone;
 $digits = preg_replace('/\D/', '', $contact);
 $validPhone = preg_match('/^[+0-9(). -]+$/D', $contact) && strlen($digits) >= 7 && strlen($digits) <= 15;
-$validTelegram = $type === 'materials' && preg_match('/^@[A-Za-z0-9_]{5,32}$/D', $contact);
+$validTelegram = preg_match('/^@[A-Za-z0-9_]{5,32}$/D', $contact);
 if (!in_array($type, ['request', 'materials'], true) || field('consent', 10) !== 'on' || (!$validPhone && !$validTelegram)) {
     respond(422, false);
 }
