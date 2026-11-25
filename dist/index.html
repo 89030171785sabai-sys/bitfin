@@ -340,16 +340,33 @@ html{scroll-behavior:smooth;scroll-padding-top:100px}
     object-fit: contain;
   }
 </style>
+<style id="request-popup-style">
+  html:has(.request-popup[open]) { overflow: hidden; }
+  .request-popup { width: min(520px, calc(100% - 24px)); max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); padding: 0; border: 1px solid var(--line); border-radius: 22px; background: #fff; color: var(--ink); }
+  .request-popup::backdrop { background: rgba(15, 15, 18, .72); backdrop-filter: blur(4px); }
+  .request-popup .request-form { padding: 16px 28px 24px; }
+  .request-popup-head { display: flex; justify-content: space-between; align-items: start; gap: 10px; padding: 24px 24px 0 28px; }
+  .request-popup-head h2 { margin: 0; font-size: clamp(24px, 5vw, 32px); line-height: 1.2; }
+  .request-popup-close { flex: 0 0 44px; height: 44px; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: inherit; font-size: 26px; line-height: 1; }
+  .request-popup-close:hover { background: var(--pink-soft); }
+  .request-popup .fields { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .request-popup .consent input { flex-shrink: 0; }
+  .request-popup .form-status:empty { min-height: 0; margin: 0; }
+  @media (max-width: 480px) {
+    .request-popup-head { padding: 18px 16px 0 18px; }
+    .request-popup .request-form { padding: 12px 18px 18px; }
+  }
+</style>
 </head>
 <body><noscript><div><img src="https://mc.yandex.ru/watch/114367039" style="position:absolute;left:-9999px" alt=""></div></noscript>
   <a class="skip" href="#main">Перейти к содержанию</a>
-  <header class="bf-header"><div class="bf-bar"><a class="bf-logo" href="#main" aria-label="БИТ.ФИНАНС — в начало страницы"><span class="bf-mark">Б</span>БИТ<span class="bf-dot">.</span>ФИНАНС</a><button class="bf-toggle" aria-controls="bf-menu" aria-expanded="false" aria-label="Открыть меню" type="button"><span></span><span></span><span></span></button><nav class="bf-menu" id="bf-menu" aria-label="Разделы этой страницы"><a href="#solutions">Услуги</a><a href="#expert">Об Андрее</a><a href="#cases">Отзывы</a><a href="#process">Этапы работы</a><a href="#certificates">Сертификаты</a><a href="#contacts">Контакты</a><a class="bf-call" href="#request">Обсудить задачу</a></nav></div></header>
+  <header class="bf-header"><div class="bf-bar"><a class="bf-logo" href="#main" aria-label="БИТ.ФИНАНС — в начало страницы"><span class="bf-mark">Б</span>БИТ<span class="bf-dot">.</span>ФИНАНС</a><button class="bf-toggle" aria-controls="bf-menu" aria-expanded="false" aria-label="Открыть меню" type="button"><span></span><span></span><span></span></button><nav class="bf-menu" id="bf-menu" aria-label="Разделы этой страницы"><a href="#solutions">Услуги</a><a href="#expert">Об Андрее</a><a href="#cases">Отзывы</a><a href="#process">Этапы работы</a><a href="#certificates">Сертификаты</a><a href="#contacts">Контакты</a><a class="bf-call" href="#request" data-request-popup>Обсудить задачу</a></nav></div></header>
   <main id="main">
     <!-- Первый экран -->
     <section class="hero" id="top">
       <div class="wrap">
         <div class="hero-stage">
-          <div class="hero-copy"><p class="fact-line">БИТ.ФИНАНС под ключ</p><h1>Внедрение БИТ.ФИНАНС за 30 дней с доработкой под ваши процессы и гарантией адаптации</h1><ul class="hero-promises" aria-label="Сроки работы"><li>Ответим в течение 1 минуты</li><li>Проведём аудит за 1 час</li><li>Внедрим за 30 дней</li><li>Дадим пожизненную гарантию</li></ul><div class="hero-actions"><a class="btn" href="#request">БЕСПЛАТНАЯ КОНСУЛЬТАЦИЯ</a><a class="btn btn--secondary" href="#cases">Смотреть отзывы</a></div><div class="hero-trust" aria-label="Опыт и условия работы"><div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M8 15h3M8 18h6"/></svg><strong>12+ лет</strong><span>практики внедрения</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5zM4 7.5l8 4.5 8-4.5M12 12v9"/></svg><strong>40+</strong><span>полных внедрений</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 4.7-3.1 7.6-8 9-4.9-1.4-8-4.3-8-9V6z"/><path d="m8 12 2.5 2.5L16 9"/></svg><strong>Поэтапно</strong><span>оплата после приёмки</span></div></div></div>
+          <div class="hero-copy"><p class="fact-line">БИТ.ФИНАНС под ключ</p><h1>Внедрение БИТ.ФИНАНС за 30 дней с доработкой под ваши процессы и гарантией адаптации</h1><ul class="hero-promises" aria-label="Сроки работы"><li>Ответим в течение 1 минуты</li><li>Проведём аудит за 1 час</li><li>Внедрим за 30 дней</li><li>Дадим пожизненную гарантию</li></ul><div class="hero-actions"><a class="btn" href="#request" data-request-popup>БЕСПЛАТНАЯ КОНСУЛЬТАЦИЯ</a><a class="btn btn--secondary" href="#cases">Смотреть отзывы</a></div><div class="hero-trust" aria-label="Опыт и условия работы"><div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M8 15h3M8 18h6"/></svg><strong>12+ лет</strong><span>практики внедрения</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5zM4 7.5l8 4.5 8-4.5M12 12v9"/></svg><strong>40+</strong><span>полных внедрений</span></div><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 4.7-3.1 7.6-8 9-4.9-1.4-8-4.3-8-9V6z"/><path d="m8 12 2.5 2.5L16 9"/></svg><strong>Поэтапно</strong><span>оплата после приёмки</span></div></div></div>
           <div class="hero-visual"><img class="hero-portrait" src="https://www.bit-finans.pro/wp-content/themes/bitfinance/static/local-media/hero-dashboard.png" alt="Андрей Чуйкин, эксперт по внедрению БИТ.ФИНАНС" fetchpriority="high"><div class="hero-chart" aria-label="Этапы внедрения БИТ.ФИНАНС"><div class="chart-head"><div><span>Контур внедрения</span><strong>От аудита до поддержки</strong></div><b>5 этапов</b></div><svg viewBox="0 0 520 116" role="img" aria-label="Последовательный рост готовности проекта по этапам"><path class="chart-grid" d="M0 92H520M0 56H520M0 20H520"/><path class="chart-line" pathLength="1" d="M8 92C62 90 70 74 126 76S198 58 250 61 326 42 378 44 455 19 512 18"/><circle cx="8" cy="92" r="4"/><circle cx="126" cy="76" r="4"/><circle cx="250" cy="61" r="4"/><circle cx="378" cy="44" r="4"/><circle cx="512" cy="18" r="5"/></svg><div class="chart-labels"><span>Аудит</span><span>Проект</span><span>Настройка</span><span>Обучение</span><span>Поддержка</span></div></div></div>
         </div>
         <div class="hero-carousel" id="solutions" role="region" aria-roledescription="carousel" aria-label="Услуги БИТ.ФИНАНС">
@@ -477,6 +494,41 @@ html{scroll-behavior:smooth;scroll-padding-top:100px}
       const outside = event.clientX < bounds.left || event.clientX > bounds.right ||
         event.clientY < bounds.top || event.clientY > bounds.bottom;
       if (outside) dialog.close();
+    });
+  })();
+</script>
+<dialog class="request-popup" id="request-popup" aria-labelledby="request-popup-title">
+  <div class="request-popup-head">
+    <h2 id="request-popup-title">Обсудить задачу</h2>
+    <button class="request-popup-close" type="button" aria-label="Закрыть форму заявки" autofocus>×</button>
+  </div>
+  <form class="request-form" novalidate method="post" action="/request.php" data-lead-type="request"><div class="fields"><label class="field-full">Телефон или Telegram<input name="phone" type="text" autocapitalize="none" spellcheck="false" placeholder="+7 900 000-00-00 или @username" required maxlength="40" pattern="(?:[+0-9 .\(\)\-]{7,40}|@[A-Za-z0-9_]{5,32})" title="Введите номер телефона или имя пользователя Telegram в формате @username"></label><label class="field-full">Коротко о задаче<textarea name="comment" placeholder="Что хотите внедрить или донастроить?"></textarea></label></div><label class="consent"><input name="consent" type="checkbox" required><span>Даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a>.</span></label><p class="privacy-note">Подробнее: <a href="personal-data.html" target="_blank" rel="noopener">политика обработки данных</a> и <a href="privacy.html" target="_blank" rel="noopener">политика конфиденциальности</a>.</p><button class="btn" type="submit">Отправить заявку</button><p class="form-status" aria-live="polite"></p></form>
+</dialog>
+<script>
+  (() => {
+    const dialog = document.querySelector("#request-popup");
+    if (typeof dialog.showModal !== "function") return;
+    const close = dialog.querySelector(".request-popup-close");
+    let trigger;
+    for (const link of document.querySelectorAll("[data-request-popup]")) {
+      link.setAttribute("aria-haspopup", "dialog");
+      link.setAttribute("aria-controls", dialog.id);
+      link.addEventListener("click", event => {
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        trigger = link;
+        dialog.showModal();
+      });
+    }
+    close.addEventListener("click", () => dialog.close());
+    dialog.addEventListener("close", () => {
+      const focusTarget = trigger?.getClientRects().length ? trigger : document.querySelector(".bf-toggle");
+      focusTarget?.focus({preventScroll: true});
+    });
+    dialog.addEventListener("click", event => {
+      if (event.target !== dialog) return;
+      const {left, top, right, bottom} = dialog.getBoundingClientRect();
+      if (event.clientX < left || event.clientX > right || event.clientY < top || event.clientY > bottom) dialog.close();
     });
   })();
 </script>
