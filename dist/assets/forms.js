@@ -43,10 +43,21 @@
       status.textContent = 'Отправляем…';
       try {
         const result = await fetch('/request.php', {method: 'POST', body: data});
-        if (!result.ok || !(await result.json()).ok) throw new Error('Delivery failed');
+        if (!result.ok) throw new Error('Delivery failed');
+        const response = await result.json();
+        if (!response.ok) throw new Error('Delivery failed');
         status.textContent = form.dataset.leadType === 'materials'
           ? 'Запрос на материалы отправлен.'
           : 'Заявка отправлена. Мы свяжемся с вами.';
+        if (form.dataset.leadType === 'materials' && response.download_url === '/assets/materials/bitfinans-materials.zip') {
+          const download = document.createElement('a');
+          download.href = response.download_url;
+          download.download = 'bitfinans-materials.zip';
+          download.textContent = 'Скачать материалы';
+          status.textContent = 'Запрос отправлен. Если скачивание не началось, нажмите «Скачать материалы». ';
+          status.append(download);
+          download.click();
+        }
         form.reset();
         window.ym?.(114367039, 'reachGoal', 'lead_submitted');
       } catch {

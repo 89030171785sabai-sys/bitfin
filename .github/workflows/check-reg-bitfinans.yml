@@ -7,6 +7,9 @@ on:
       - .github/workflows/check-reg-bitfinans.yml
       - dist/*.html
       - dist/favicon.svg
+      - dist/request.php
+      - dist/assets/forms.js
+      - dist/assets/materials/bitfinans-materials.zip
 
 permissions:
   contents: read
@@ -55,6 +58,11 @@ jobs:
                 "ftp://server88.hosting.reg.ru/$remote"
           }
 
+          if [[ -f dist/assets/materials/bitfinans-materials.zip ]]; then
+            upload dist/assets/materials/bitfinans-materials.zip
+          fi
+          upload dist/request.php
+          upload dist/assets/forms.js
           upload dist/favicon.svg
           for file in dist/*.html; do
             case "$file" in
@@ -63,4 +71,4 @@ jobs:
             upload "$file"
           done
           upload dist/index.html
-          echo "Pages and tab icon updated."
+          echo "Site pages and form handlers updated."

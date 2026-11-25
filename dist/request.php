@@ -3,10 +3,10 @@ declare(strict_types=1);
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-function respond(int $status, bool $ok): void
+function respond(int $status, bool $ok, array $data = []): void
 {
     http_response_code($status);
-    echo json_encode(['ok' => $ok]);
+    echo json_encode(['ok' => $ok] + $data);
     exit;
 }
 
@@ -74,4 +74,15 @@ $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 curl_close($curl);
 $reply = is_string($body) ? json_decode($body, true) : null;
 $delivered = $status === 200 && ($reply['ok'] ?? false) === true;
-respond($delivered ? 200 : 502, $delivered);
+if (!$delivered) {
+    respond(502, false);
+}
+
+$data = [];
+if ($type === 'materials') {
+    $downloadPath = '/assets/materials/bitfinans-materials.zip';
+    if (is_file(__DIR__ . $downloadPath) && is_readable(__DIR__ . $downloadPath)) {
+        $data['download_url'] = $downloadPath;
+    }
+}
+respond(200, true, $data);
