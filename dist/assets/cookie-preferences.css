@@ -9,76 +9,68 @@
   inset-inline: 0;
   bottom: 0;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  grid-template-areas: "title copy actions" "title details actions";
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 4px clamp(16px, 2.5vw, 36px);
+  gap: 12px clamp(16px, 2.5vw, 36px);
   box-sizing: border-box;
   max-height: calc(100dvh - 12px);
   overflow: auto;
   padding: 14px max(20px, env(safe-area-inset-right)) calc(14px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
   border-top: 1px solid #e5d9df;
-  background: #fff;
+  background: #fff8fb;
   color: #171717;
   box-shadow: 0 -8px 32px rgb(23 23 23 / 10%);
   font: 400 14px/1.55 Manrope, Arial, sans-serif;
 }
 
-.cookie-preferences h2 {
-  grid-area: title;
-  margin: 0;
-  font: 750 19px/1.25 Manrope, Arial, sans-serif;
-  letter-spacing: 0;
-}
-
 .cookie-preferences p {
-  grid-area: copy;
   margin: 0;
   color: #52525b;
 }
 
 .cookie-preferences a {
-  grid-area: details;
-  justify-self: start;
-  color: #a50055;
+  color: inherit;
   text-decoration: underline;
   text-underline-offset: .16em;
 }
 
 .cookie-preferences-actions {
-  grid-area: actions;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 12px;
 }
 
 .cookie-preferences-actions button {
   min-height: 44px;
   padding: 8px 12px;
-  border: 1px solid #cebbc5;
+  border: 1px solid #171717;
   border-radius: 10px;
-  background: #fff;
+  background: transparent;
   color: #171717;
   font: 650 14px/1.3 Manrope, Arial, sans-serif;
   cursor: pointer;
 }
 
-@media (max-width: 850px) {
-  .cookie-preferences {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "title" "copy" "details" "actions";
-    gap: 6px;
-    padding-top: 12px;
-  }
-
-  .cookie-preferences-actions {
-    margin-top: 4px;
-  }
+.cookie-preferences-actions [data-cookie-choice="allow"] {
+  border-color: #cf0069;
+  background: #cf0069;
+  color: #fff;
 }
 
-.cookie-preferences-actions button:hover {
-  border-color: #ae0058;
+.cookie-preferences-actions [data-cookie-choice="allow"]:hover {
+  border-color: #a50055;
+  background: #a50055;
+}
+
+.cookie-preferences-actions [data-cookie-choice="deny"]:hover {
   background: #fff1f7;
+}
+
+@media (max-width: 760px) {
+  .cookie-preferences {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 12px;
+  }
 }
 
 .cookie-settings {
