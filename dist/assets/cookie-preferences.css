@@ -1,0 +1,85 @@
+.cookie-preferences[hidden],
+.cookie-settings[hidden] {
+  display: none;
+}
+
+.cookie-preferences {
+  position: fixed;
+  z-index: 900;
+  inset-inline-end: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  width: min(420px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid #e5d9df;
+  border-radius: 18px;
+  background: #fff;
+  color: #171717;
+  box-shadow: 0 12px 40px rgb(23 23 23 / 16%);
+  font: 400 14px/1.55 Manrope, Arial, sans-serif;
+}
+
+.cookie-preferences h2 {
+  margin: 0 0 6px;
+  font: 750 19px/1.25 Manrope, Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+.cookie-preferences p {
+  margin: 0 0 12px;
+  color: #52525b;
+}
+
+.cookie-preferences a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  color: #a50055;
+  text-decoration: underline;
+  text-underline-offset: .16em;
+}
+
+.cookie-preferences-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.cookie-preferences-actions button {
+  flex: 1 1 160px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #cebbc5;
+  border-radius: 10px;
+  background: #fff;
+  color: #171717;
+  font: 650 14px/1.3 Manrope, Arial, sans-serif;
+  cursor: pointer;
+}
+
+.cookie-preferences-actions button:hover {
+  border-color: #ae0058;
+  background: #fff1f7;
+}
+
+.cookie-settings {
+  min-height: 44px;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  text-decoration: underline;
+  text-underline-offset: .18em;
+  cursor: pointer;
+}
+
+.cookie-preferences :focus-visible,
+.cookie-settings:focus-visible {
+  outline: 2px solid #ae0058;
+  outline-offset: 2px;
+}

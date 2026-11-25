@@ -9,6 +9,8 @@ on:
       - dist/favicon.svg
       - dist/request.php
       - dist/assets/forms.js
+      - dist/assets/metrika.js
+      - dist/assets/cookie-preferences.css
       - dist/assets/materials/bitfinans-materials.zip
 
 permissions:
@@ -63,6 +65,8 @@ jobs:
           fi
           upload dist/request.php
           upload dist/assets/forms.js
+          upload dist/assets/metrika.js
+          upload dist/assets/cookie-preferences.css
           upload dist/favicon.svg
           for file in dist/*.html; do
             case "$file" in
