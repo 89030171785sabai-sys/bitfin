@@ -18,6 +18,11 @@
     const value = keys.map(key => query.get(key) || namedContent.get(key)).find(Boolean);
     if (value) campaign[field] = value.slice(0, 100);
   }
+  const directContent = /^group_(\d+)_ad_(\d+)$/.exec(content || '');
+  if (directContent) {
+    campaign.group_id ||= directContent[1];
+    campaign.ad_id ||= directContent[2];
+  }
   let attribution = campaign;
   try {
     if (Object.keys(campaign).length) sessionStorage.setItem(campaignKey, JSON.stringify(campaign));
@@ -29,11 +34,20 @@
   for (const form of document.querySelectorAll('form[data-lead-type]')) {
     const status = form.querySelector('[aria-live]');
     const button = form.querySelector('button[type="submit"], button:not([type])');
+    const contact = form.elements.namedItem(form.dataset.leadType === 'materials' ? 'contact' : 'phone');
+    contact.addEventListener('input', () => contact.setCustomValidity(''));
     form.addEventListener('submit', async event => {
       event.preventDefault();
-      if (button.disabled || !form.reportValidity()) return;
+      if (button.disabled) return;
+      const value = contact.value.trim();
+      const digits = value.replace(/\D/g, '');
+      const validPhone = /^[+0-9(). -]+$/.test(value) && digits.length >= 7 && digits.length <= 15;
+      const validTelegram = /^@[A-Za-z0-9_]{1,32}$/.test(value);
+      contact.setCustomValidity(validPhone || validTelegram ? '' : 'Введите телефон или ник Telegram, например @username.');
+      if (!form.reportValidity()) return;
 
       const data = new URLSearchParams(new FormData(form));
+      data.set(contact.name, value);
       data.set('type', form.dataset.leadType);
       data.set('page', url.pathname);
       for (const field of Object.keys(aliases)) {
